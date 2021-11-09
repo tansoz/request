@@ -8,11 +8,13 @@ import (
 type monday struct {
 	Client
 	header Header // client 公共请求头
+	client *http.Client
 }
 
 func NewClient() Client {
 	client := new(monday)
 	client.header = NewHeader()
+	client.client = new(http.Client)
 	return client
 }
 func (m *monday) Header() Header {
@@ -34,6 +36,7 @@ type mondayAction struct {
 	method string
 	url    string
 	params Params
+	client monday
 }
 
 func (m monday) NewAction(method, url string, params map[string]interface{}) Action {
@@ -42,6 +45,7 @@ func (m monday) NewAction(method, url string, params map[string]interface{}) Act
 	action.method = strings.ToUpper(method)
 	action.params = NewParams(params)
 	action.header = m.Header().Clone()
+	action.client = m
 	return action
 }
 
@@ -66,7 +70,7 @@ func (ma mondayAction) Do(body Body) *http.Response {
 		for k, v := range ma.header.Items() {
 			rq.Header.Set(k, v)
 		}
-		if resp, err := http.DefaultClient.Do(rq); err == nil {
+		if resp, err := ma.client.client.Do(rq); err == nil {
 			return resp
 		}
 	}
