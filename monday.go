@@ -49,8 +49,8 @@ func (ma mondayAction) Header() Header {
 	return ma.header
 }
 func (ma mondayAction) Do(body Body) *http.Response {
-	// body must be empty if HTTP method equal GET
-	if ma.method == "GET" {
+	// body must be empty if HTTP method equal GET or OPTIONS
+	if ma.method == "GET" || ma.method == "OPTIONS" {
 		body = nil
 	}
 	if rq, err := http.NewRequest(ma.method, ma.url, body); err == nil {

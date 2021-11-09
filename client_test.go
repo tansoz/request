@@ -36,6 +36,18 @@ func TestNewClient(t *testing.T) {
 		"password": "123456",
 	})); resp != nil {
 		var tmp bytes.Buffer
+		fmt.Println(resp)
+		tmp.ReadFrom(resp.Body)
+		fmt.Println(tmp.String())
+	}
+	if resp := cli.HTTP("OPTIONS", "http://sw.rommhui.com/info.php", map[string]interface{}{
+		"good": "asdasd",
+	}).Do(request.NewQueryBody(map[string]interface{}{
+		"id":       1,
+		"password": "123456",
+	})); resp != nil {
+		var tmp bytes.Buffer
+		fmt.Println(resp)
 		tmp.ReadFrom(resp.Body)
 		fmt.Println(tmp.String())
 	}
