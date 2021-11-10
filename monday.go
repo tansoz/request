@@ -11,6 +11,7 @@ type monday struct {
 	client *http.Client
 }
 
+// Create a instance of a HTTP request client
 func NewClient() Client {
 	client := new(monday)
 	client.header = NewHeader()
@@ -20,12 +21,18 @@ func NewClient() Client {
 func (m *monday) Header() Header {
 	return m.header
 }
+
+// Create a simple HTTP GET method request
 func (m monday) Get(url string, params map[string]interface{}) Action {
 	return m.HTTP("GET", url, params)
 }
+
+// Create a simple HTTP Post method request
 func (m monday) Post(url string, params map[string]interface{}) Action {
 	return m.HTTP("POST", url, params)
 }
+
+// Create a request with a method of HTTP that you would like to, etc. GET, POST, PUT...
 func (m monday) HTTP(method, url string, params map[string]interface{}) Action {
 	return m.NewAction(method, url, params)
 }
@@ -61,6 +68,7 @@ func (ma mondayAction) Do(body Body) (*http.Response, error) {
 		if body != nil {
 			rq.ContentLength = body.ContentLength()
 			body.SetHeader(ma.header)
+			defer body.Reset()
 		}
 		query := rq.URL.Query()
 		for k, v := range ma.params.Items() {

@@ -10,13 +10,6 @@ import (
 	"regexp"
 )
 
-type FieldType uint8
-
-const (
-	FILE FieldType = iota
-	VALUE
-)
-
 type Field interface {
 	io.Reader
 	Len() int64
@@ -97,7 +90,8 @@ type fileFeild struct {
 	filesize int64
 }
 
-func NewFileFields(name, filename, path, mime string, offset, len int64) Field {
+// Create a file field of a multipart form data
+func NewFileField(name, filename, path, mime string, offset, len int64) Field {
 	field := new(fileFeild)
 
 	if fp, err := os.OpenFile(path, os.O_RDONLY, 0666); err == nil {
@@ -115,6 +109,9 @@ func NewFileFields(name, filename, path, mime string, offset, len int64) Field {
 		}
 		if mime == "" {
 			mime = "application/octet-stream"
+		}
+		if filename == "" {
+			filename = fileInfo.Name()
 		}
 
 		field.data.WriteString(fmt.Sprintf("Content-Disposition: form-data; name=\"%s\"; filename=\"%s\"\r\n%sContent-Length: %d\r\n\r\n", escape(name), escape(filename), "Content-Type: "+mime+"\r\n", filesize))
@@ -134,7 +131,6 @@ func (f *fileFeild) Read(bytes []byte) (int, error) {
 	if l := len(f.list); l > 0 && f.readpos < l {
 		num, err := f.list[f.readpos].Read(bytes)
 		if f.readpos == 1 {
-			fmt.Println(num)
 			f.filesize -= int64(num)
 		}
 		if (err != nil && err == io.EOF) || f.CheckEOF() {

@@ -27,7 +27,7 @@ func TestNewValueField(t *testing.T) {
 }
 func TestNewFileField(t *testing.T) {
 	bytes := make([]byte, 30)
-	f := request.NewFileFields("files", "blob.png", "field_test.go", "", 0, -1)
+	f := request.NewFileField("files", "blob.png", "field_test.go", "", 0, -1)
 	fmt.Println(f)
 	for num, err := f.Read(bytes); err == nil; num, err = f.Read(bytes) {
 		fmt.Println(string(bytes[0:num]))

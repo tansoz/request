@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/base64"
 	"encoding/json"
+	"encoding/xml"
 	"fmt"
 	"io"
 	"net/url"
@@ -15,62 +16,76 @@ type Body interface {
 	io.Reader
 	SetHeader(header Header)
 	ContentLength() int64
+	Reset()
 }
 
-type jsonBody struct {
+type ReadCloseLener interface {
+	Len() int
+	Read([]byte) (int, error)
+	Reset()
+}
+
+type rawBody struct {
 	Body
-	data *bytes.Buffer
-	len  int
+	data    ReadCloseLener
+	headers map[string]string
 }
 
-func NewJSONBody(data interface{}) Body {
-	body := new(jsonBody)
-	body.data = new(bytes.Buffer)
-	json.NewEncoder(body.data).Encode(data)
-	body.len = body.data.Len()
+func NewRawBody(data ReadCloseLener, headers map[string]string) Body {
+	body := new(rawBody)
+
+	body.data = data
+	body.headers = headers
+
 	return body
 }
-
-func (j jsonBody) Read(bytes []byte) (int, error) {
-	return j.data.Read(bytes)
+func (r rawBody) Read(p []byte) (int, error) {
+	return r.data.Read(p)
 }
-func (j jsonBody) ContentLength() int64 {
-	return int64(j.len)
+func (r rawBody) SetHeader(header Header) {
+	for k, v := range r.headers {
+		header.Set(k, v)
+	}
 }
-func (j jsonBody) SetHeader(header Header) {
-	header.Set("content-type", "application/json; charset=utf-8")
+func (r rawBody) ContentLength() int64 {
+	return int64(r.data.Len())
 }
-
-type queryBody struct {
-	Body
-	data *bytes.Buffer
-	len  int
+func (r rawBody) Reset() {
+	r.data.Reset()
 }
 
+// A object encode to JSON as HTTP request body
+func NewJSONBody(data interface{}) Body {
+	p := new(bytes.Buffer)
+	json.NewEncoder(p).Encode(data)
+	return NewRawBody(p, map[string]string{
+		"content-type": "application/json; charset=utf-8",
+	})
+}
+
+// A map encode to http query as HTTP request body
 func NewQueryBody(data map[string]interface{}) Body {
-
-	body := new(queryBody)
-
-	body.data = new(bytes.Buffer)
+	p := new(bytes.Buffer)
 	query := make(url.Values)
 	for k, v := range NewParams(data).Items() {
 		query.Set(k, v)
 	}
-	body.len, _ = body.data.Write([]byte(query.Encode()))
-
-	return body
-}
-func (q queryBody) ContentLength() int64 {
-	return int64(q.len)
-}
-func (q queryBody) Read(bytes []byte) (int, error) {
-	return q.data.Read(bytes)
-}
-func (q queryBody) SetHeader(header Header) {
-	header.Set("content-type", "application/x-www-form-urlencoded; charset=utf-8")
+	p.Write([]byte(query.Encode()))
+	return NewRawBody(p, map[string]string{
+		"content-type": "application/x-www-form-urlencoded; charset=utf-8",
+	})
 }
 
-func newBoundary() string {
+// A object encode to XML document as HTTP request body
+func NewXMLBody(data interface{}) Body {
+	p := new(bytes.Buffer)
+	xml.NewEncoder(p).Encode(data)
+	return NewRawBody(p, map[string]string{
+		"content-type": "application/xml; charset=utf-8",
+	})
+}
+
+func boundary() string {
 	return strings.ReplaceAll(base64.StdEncoding.EncodeToString([]byte(fmt.Sprint(time.Now().Unix()))), "=", "")
 }
 
@@ -102,9 +117,9 @@ func NewMultipartBody(fields []Field, boundary string) Body {
 }
 func (m multipartBody) getBounary() string {
 	if m.boundary == "" {
-		m.boundary = newBoundary()
+		m.boundary = boundary()
 	}
-	return "--" + m.boundary
+	return m.boundary
 }
 func (m *multipartBody) Read(bytes []byte) (int, error) {
 	if l := len(m.fields); l > 0 && m.readpos < l {
@@ -130,4 +145,7 @@ func (m multipartBody) ContentLength() int64 {
 }
 func (m multipartBody) SetHeader(header Header) {
 	header.Set("content-type", "multipart/form-data; boundary="+m.getBounary())
+}
+func (m multipartBody) Reset() {
+
 }
