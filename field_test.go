@@ -2,8 +2,9 @@ package request_test
 
 import (
 	"fmt"
-	"request"
 	"testing"
+
+	"github.com/tansoz/request"
 )
 
 func TestNewValueField(t *testing.T) {

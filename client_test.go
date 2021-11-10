@@ -3,8 +3,9 @@ package request_test
 import (
 	"bytes"
 	"fmt"
-	"request"
 	"testing"
+
+	"github.com/tansoz/request"
 )
 
 func TestNewClient(t *testing.T) {
