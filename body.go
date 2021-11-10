@@ -2,9 +2,13 @@ package request
 
 import (
 	"bytes"
+	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/url"
+	"strings"
+	"time"
 )
 
 type Body interface {
@@ -64,4 +68,66 @@ func (q queryBody) Read(bytes []byte) (int, error) {
 }
 func (q queryBody) SetHeader(header Header) {
 	header.Set("content-type", "application/x-www-form-urlencoded; charset=utf-8")
+}
+
+func newBoundary() string {
+	return strings.ReplaceAll(base64.StdEncoding.EncodeToString([]byte(fmt.Sprint(time.Now().Unix()))), "=", "")
+}
+
+type multipartBody struct {
+	Body
+	boundary string
+	fields   []Field
+	readpos  int
+}
+
+func NewMultipartBody(fields []Field, boundary string) Body {
+
+	body := new(multipartBody)
+
+	body.boundary = boundary
+	body.fields = make([]Field, len(fields)*2+1)
+	p := 0
+	for _, f := range fields {
+		body.fields[p] = NewRawFeild("--" + body.getBounary() + "\r\n")
+		body.fields[p+1] = f
+		p += 2
+	}
+
+	if p > 0 {
+		body.fields[p] = NewRawFeild("--" + body.getBounary() + "--")
+	}
+
+	return body
+}
+func (m multipartBody) getBounary() string {
+	if m.boundary == "" {
+		m.boundary = newBoundary()
+	}
+	return "--" + m.boundary
+}
+func (m *multipartBody) Read(bytes []byte) (int, error) {
+	if l := len(m.fields); l > 0 && m.readpos < l {
+		num, err := m.fields[m.readpos].Read(bytes)
+		if (err != nil && err == io.EOF) || m.fields[m.readpos].Len() == 0 {
+			m.fields[m.readpos].Reset()
+			m.readpos += 1
+		} else if err != nil {
+			return num, err
+		}
+		return num, nil
+	}
+	return 0, io.EOF
+}
+func (m multipartBody) ContentLength() int64 {
+	l := int64(0)
+
+	for _, f := range m.fields {
+		l += f.Len()
+	}
+
+	return l
+}
+func (m multipartBody) SetHeader(header Header) {
+	header.Set("content-type", "multipart/form-data; boundary="+m.getBounary())
 }

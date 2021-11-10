@@ -52,7 +52,7 @@ func (m monday) NewAction(method, url string, params map[string]interface{}) Act
 func (ma mondayAction) Header() Header {
 	return ma.header
 }
-func (ma mondayAction) Do(body Body) *http.Response {
+func (ma mondayAction) Do(body Body) (*http.Response, error) {
 	// body must be empty if HTTP method equal GET or OPTIONS
 	if ma.method == "GET" || ma.method == "OPTIONS" {
 		body = nil
@@ -70,10 +70,9 @@ func (ma mondayAction) Do(body Body) *http.Response {
 		for k, v := range ma.header.Items() {
 			rq.Header.Set(k, v)
 		}
-		if resp, err := ma.client.client.Do(rq); err == nil {
-			return resp
-		}
+		return ma.client.client.Do(rq)
+	} else {
+		return nil, err
 	}
 
-	return nil
 }
