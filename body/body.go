@@ -46,7 +46,7 @@ func NewQueryBody(query map[string]interface{}, headers map[string][]string) Bod
 		headers = make(map[string][]string)
 	}
 
-	headers["content-type"] = []string{"application/x-www-form-urlencoded; charset=utf-8"}
+	headers["Content-Type"] = []string{"application/x-www-form-urlencoded; charset=utf-8"}
 
 	return NewRawBody(readable.NewStringReadable(vquery.Encode()), headers)
 }
@@ -61,7 +61,7 @@ func NewJSONBody(object interface{}, headers map[string][]string) Body {
 
 	json.NewEncoder(tmp).Encode(object)
 
-	headers["content-type"] = []string{"application/json; charset=utf-8"}
+	headers["Content-Type"] = []string{"application/json; charset=utf-8"}
 
 	return NewRawBody(readable.NewBytesBufferReadable(tmp), headers)
 }
@@ -76,7 +76,7 @@ func NewXMLBody(object interface{}, headers map[string][]string) Body {
 
 	xml.NewEncoder(tmp).Encode(object)
 
-	headers["content-type"] = []string{"application/xml; charset=utf-8"}
+	headers["Content-Type"] = []string{"application/xml; charset=utf-8"}
 
 	return NewRawBody(readable.NewBytesBufferReadable(tmp), headers)
 }
@@ -95,7 +95,7 @@ func NewBinaryFileBody(filename string, body readable.Readable, contentType stri
 	}
 
 	headers["Content-Disposition"] = []string{fmt.Sprintf("attachment; filename=\"%s\"", common.Escape(filename))}
-	headers["content-type"] = []string{contentType}
+	headers["Content-Type"] = []string{contentType}
 
 	return NewRawBody(body, headers)
 }

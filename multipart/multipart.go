@@ -31,7 +31,7 @@ func NewMultipartBody(fields []Field, boundary string, headers map[string][]stri
 		boundary = Boundary()
 	}
 
-	headers["content-type"] = []string{"multipart/form-data; boundary=" + boundary}
+	headers["Content-Type"] = []string{"multipart/form-data; boundary=" + boundary}
 
 	readables := make([]readable.Readable, len(fields)*2+1)
 	p := 0
