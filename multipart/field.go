@@ -35,7 +35,7 @@ func NewRawField(readables []readable.Readable, headers map[string][]string, fie
 	bodyReadable := readable.NewListReadable(readables)
 	header := http.Header(headers)
 	sb := new(strings.Builder)
-	header.Set("content-length", fmt.Sprint(bodyReadable.Len()))
+	header.Set("Content-Length", fmt.Sprint(bodyReadable.Len()))
 	for k, vs := range header {
 		for _, v := range vs {
 			sb.WriteString(k + ": " + v + "\r\n")
@@ -54,7 +54,7 @@ func NewNameRawField(name string, content readable.Readable, headers map[string]
 	if headers == nil {
 		headers = make(map[string][]string)
 	}
-	headers["content-disposition"] = []string{"form-data; name=\"" + common.Escape(name) + "\""}
+	headers["Content-Disposition"] = []string{"form-data; name=\"" + common.Escape(name) + "\""}
 	return NewRawField([]readable.Readable{content}, headers, VALUE)
 }
 
