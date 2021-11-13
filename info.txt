@@ -1,0 +1,105 @@
+array(40) {
+  ["USER"]=>
+  string(3) "www"
+  ["HOME"]=>
+  string(9) "/home/www"
+  ["HTTP_CDN_LOOP"]=>
+  string(10) "cloudflare"
+  ["HTTP_CF_CONNECTING_IP"]=>
+  string(14) "223.104.60.187"
+  ["HTTP_POWER_BY"]=>
+  string(7) "rommhui"
+  ["HTTP_CONTENT_TYPE"]=>
+  string(56) "multipart/form-data; boundary=NTU3NzAwNjc5MzU4NDYwMDcxOQ"
+  ["HTTP_USER_AGENT"]=>
+  string(13) "request/1.0.1"
+  ["HTTP_CF_VISITOR"]=>
+  string(17) "{"scheme":"http"}"
+  ["HTTP_X_FORWARDED_PROTO"]=>
+  string(4) "http"
+  ["HTTP_CONTENT_LENGTH"]=>
+  string(3) "415"
+  ["HTTP_CF_RAY"]=>
+  string(20) "6ad969659c2d7085-SJC"
+  ["HTTP_X_FORWARDED_FOR"]=>
+  string(14) "223.104.60.187"
+  ["HTTP_CF_IPCOUNTRY"]=>
+  string(2) "CN"
+  ["HTTP_ACCEPT_ENCODING"]=>
+  string(4) "gzip"
+  ["HTTP_CONNECTION"]=>
+  string(10) "Keep-Alive"
+  ["HTTP_HOST"]=>
+  string(14) "sw.rommhui.com"
+  ["PATH_INFO"]=>
+  string(0) ""
+  ["REDIRECT_STATUS"]=>
+  string(3) "200"
+  ["SERVER_NAME"]=>
+  string(14) "sw.rommhui.com"
+  ["SERVER_PORT"]=>
+  string(2) "80"
+  ["SERVER_ADDR"]=>
+  string(12) "172.19.34.70"
+  ["REMOTE_PORT"]=>
+  string(5) "64312"
+  ["REMOTE_ADDR"]=>
+  string(15) "162.158.255.123"
+  ["SERVER_SOFTWARE"]=>
+  string(12) "nginx/1.20.1"
+  ["GATEWAY_INTERFACE"]=>
+  string(7) "CGI/1.1"
+  ["REQUEST_SCHEME"]=>
+  string(4) "http"
+  ["SERVER_PROTOCOL"]=>
+  string(8) "HTTP/1.1"
+  ["DOCUMENT_ROOT"]=>
+  string(27) "/www/wwwroot/sw.rommhui.com"
+  ["DOCUMENT_URI"]=>
+  string(9) "/info.php"
+  ["REQUEST_URI"]=>
+  string(19) "/info.php?id=262626"
+  ["SCRIPT_NAME"]=>
+  string(9) "/info.php"
+  ["CONTENT_LENGTH"]=>
+  string(3) "415"
+  ["CONTENT_TYPE"]=>
+  string(56) "multipart/form-data; boundary=NTU3NzAwNjc5MzU4NDYwMDcxOQ"
+  ["REQUEST_METHOD"]=>
+  string(4) "POST"
+  ["QUERY_STRING"]=>
+  string(9) "id=262626"
+  ["SCRIPT_FILENAME"]=>
+  string(36) "/www/wwwroot/sw.rommhui.com/info.php"
+  ["FCGI_ROLE"]=>
+  string(9) "RESPONDER"
+  ["PHP_SELF"]=>
+  string(9) "/info.php"
+  ["REQUEST_TIME_FLOAT"]=>
+  float(1636821310.6183)
+  ["REQUEST_TIME"]=>
+  int(1636821310)
+}
+array(1) {
+  ["id"]=>
+  string(6) "262626"
+}
+array(1) {
+  ["well"]=>
+  string(7) "1516616"
+}
+array(1) {
+  ["image"]=>
+  array(5) {
+    ["name"]=>
+    string(8) "blob.png"
+    ["type"]=>
+    string(24) "application/octet-stream"
+    ["tmp_name"]=>
+    string(14) "/tmp/phpi3cCFW"
+    ["error"]=>
+    int(0)
+    ["size"]=>
+    int(118)
+  }
+}

@@ -65,5 +65,9 @@ func (l listReadable) String() string {
 	return s
 }
 func (l *listReadable) Reset() {
-
+	for _, readable := range l.list {
+		if readable != nil {
+			readable.Reset()
+		}
+	}
 }

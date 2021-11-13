@@ -22,7 +22,7 @@ type rawBody struct {
 	headers http.Header
 }
 
-func NewRawBody(readable readable.Readable, headers map[string][]string) Body {
+func RawBody(readable readable.Readable, headers map[string][]string) Body {
 	body := new(rawBody)
 
 	body.Readable = readable
@@ -35,7 +35,7 @@ func (r *rawBody) Header() http.Header {
 	return r.headers
 }
 
-func NewQueryBody(query map[string]interface{}, headers map[string][]string) Body {
+func QueryBody(query map[string]interface{}, headers map[string][]string) Body {
 
 	vquery := make(url.Values)
 	for k, v := range query {
@@ -48,10 +48,10 @@ func NewQueryBody(query map[string]interface{}, headers map[string][]string) Bod
 
 	headers["Content-Type"] = []string{"application/x-www-form-urlencoded; charset=utf-8"}
 
-	return NewRawBody(readable.NewStringReadable(vquery.Encode()), headers)
+	return RawBody(readable.NewStringReadable(vquery.Encode()), headers)
 }
 
-func NewJSONBody(object interface{}, headers map[string][]string) Body {
+func JSONBody(object interface{}, headers map[string][]string) Body {
 
 	tmp := new(bytes.Buffer)
 
@@ -63,10 +63,10 @@ func NewJSONBody(object interface{}, headers map[string][]string) Body {
 
 	headers["Content-Type"] = []string{"application/json; charset=utf-8"}
 
-	return NewRawBody(readable.NewBytesBufferReadable(tmp), headers)
+	return RawBody(readable.NewBytesBufferReadable(tmp), headers)
 }
 
-func NewXMLBody(object interface{}, headers map[string][]string) Body {
+func XMLBody(object interface{}, headers map[string][]string) Body {
 
 	tmp := new(bytes.Buffer)
 
@@ -78,10 +78,10 @@ func NewXMLBody(object interface{}, headers map[string][]string) Body {
 
 	headers["Content-Type"] = []string{"application/xml; charset=utf-8"}
 
-	return NewRawBody(readable.NewBytesBufferReadable(tmp), headers)
+	return RawBody(readable.NewBytesBufferReadable(tmp), headers)
 }
 
-func NewFileBody(filename, path, contentType string, offset, len int64, headers map[string][]string) Body {
+func FileBody(filename, path, contentType string, offset, len int64, headers map[string][]string) Body {
 	return NewBinaryFileBody(filename, readable.NewLenReadable(readable.NewFileReadable(path, offset), len), contentType, headers)
 }
 
@@ -97,5 +97,5 @@ func NewBinaryFileBody(filename string, body readable.Readable, contentType stri
 	headers["Content-Disposition"] = []string{fmt.Sprintf("attachment; filename=\"%s\"", common.Escape(filename))}
 	headers["Content-Type"] = []string{contentType}
 
-	return NewRawBody(body, headers)
+	return RawBody(body, headers)
 }

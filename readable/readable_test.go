@@ -3,6 +3,7 @@ package readable
 import (
 	"bytes"
 	"fmt"
+	"io/ioutil"
 	"testing"
 )
 
@@ -57,4 +58,24 @@ func TestNewOffsetReadable(t *testing.T) {
 	fmt.Println(readable.Len())
 	fmt.Println(readable)
 
+}
+
+func TestNewIOReaderReadable(t *testing.T) {
+
+	readable := NewIOReaderReadable(NewStringReadable("Hello World!"), 150, false)
+	fmt.Println(readable.Len())
+	fmt.Println(readable)
+	var tmp bytes.Buffer
+	tmp.ReadFrom(readable)
+	fmt.Println(tmp.Len(), tmp.Bytes())
+}
+
+func TestNewIOReadCloserReadable(t *testing.T) {
+
+	readable := NewIOReaderReadable(ioutil.NopCloser(bytes.NewBufferString("0123456789")), -1, true)
+	fmt.Println(readable.Len())
+	fmt.Println(readable)
+	var tmp bytes.Buffer
+	tmp.ReadFrom(readable)
+	fmt.Println(tmp.Len(), tmp.Bytes())
 }
