@@ -10,6 +10,10 @@ import (
 	"github.com/tansoz/request/readable"
 )
 
+var (
+	ErrHadReaded = errors.New("Response body already was readed")
+)
+
 type Response interface {
 	Header() http.Header         // response headers
 	Code() int                   // response status code
@@ -70,7 +74,7 @@ func (resp *responseImpl) File(filename string) error {
 	}()
 
 	if reader = resp.Readable(); reader == nil {
-		return errors.New("Response body already was readed")
+		return ErrHadReaded
 	} else if file, err := os.OpenFile(filename, os.O_CREATE|os.O_WRONLY, 0333); err == nil {
 		file.Truncate(0)
 		b := make([]byte, 1024)
@@ -95,7 +99,7 @@ func (resp *responseImpl) XML(i interface{}) error {
 		defer reader.Reset()
 		return xml.NewDecoder(reader).Decode(i)
 	}
-	return errors.New("Response body already was readed")
+	return ErrHadReaded
 }
 
 // make response body as JSON
@@ -107,7 +111,7 @@ func (resp *responseImpl) JSON(i interface{}) error {
 		defer reader.Reset()
 		return json.NewDecoder(reader).Decode(i)
 	}
-	return errors.New("Response body already was readed")
+	return ErrHadReaded
 }
 
 // get a response body reader

@@ -8,7 +8,7 @@ import (
 	"github.com/tansoz/request/option"
 )
 
-var URL = "http://sw.rommhui.com/info.php"
+var URL = "http://127.0.0.1/info.php"
 
 func TestGo(t *testing.T) {
 
