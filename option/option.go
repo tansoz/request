@@ -1,11 +1,8 @@
 package option
 
 import (
-	"context"
-	"crypto/tls"
 	"errors"
 	"fmt"
-	"net"
 	"net/http"
 	"net/url"
 	"strings"
@@ -47,6 +44,7 @@ var (
 	PUT     = Method("PUT")
 	DELETE  = Method("DELETE")
 	HEAD    = Method("HEAD")
+	TRACE   = Method("TRACE")
 )
 
 type urlOptionImpl struct {
@@ -166,35 +164,36 @@ type remoteAddrOptionImpl struct {
 }
 
 // set remote address
-func RemoteAddr(addr string) Option {
-	option := new(remoteAddrOptionImpl)
+// func RemoteAddr(addr string) Option {
+// 	option := new(remoteAddrOptionImpl)
 
-	option.addr = addr
+// 	option.addr = addr
 
-	return option
-}
-func (ra remoteAddrOptionImpl) Set(r *http.Request, c *http.Client, t *http.Transport) error {
-	if t == nil {
-		return ErrTransportNull
-	}
+// 	return option
+// }
+// func (ra remoteAddrOptionImpl) Set(r *http.Request, c *http.Client, t *http.Transport) error {
+// 	if t == nil {
+// 		return ErrTransportNull
+// 	}
 
-	t.DialContext = func(ctx context.Context, network, addr string) (net.Conn, error) {
-		return net.Dial(network, ra.addr)
-	}
-	t.DialTLS = func(network, addr string) (net.Conn, error) {
-		return tls.Dial(network, ra.addr, t.TLSClientConfig)
-	}
+// 	t.DialContext = func(ctx context.Context, network, addr string) (net.Conn, error) {
+// 		return net.Dial(network, ra.addr)
+// 	}
+// 	t.DialTLS = func(network, addr string) (net.Conn, error) {
+// 		return tls.Dial(network, ra.addr, t.TLSClientConfig)
+// 	}
 
-	return nil
-}
+// 	return nil
+// }
 
 type proxyOptionImpl struct {
 	addr string
 }
 
 // set proxy
-func Proxy(addr string) Option {
-	option := new(remoteAddrOptionImpl)
+// addr is supported socks5,https,http. examples, socks5://127.0.0.1:8080, https://127.0.0.1:8080, https://127.0.0.1:8080
+func ProxyURL(addr string) Option {
+	option := new(proxyOptionImpl)
 
 	option.addr = addr
 
@@ -204,9 +203,7 @@ func (p proxyOptionImpl) Set(r *http.Request, c *http.Client, t *http.Transport)
 	if t == nil {
 		return ErrTransportNull
 	}
-
 	t.Proxy = func(r *http.Request) (*url.URL, error) {
-		fmt.Println(url.Parse(p.addr))
 		return url.Parse(p.addr)
 	}
 

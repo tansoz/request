@@ -10,21 +10,21 @@ import (
 )
 
 type Request interface {
-	Do(body.Body) response.Response
+	Go(body.Body) response.Response
 }
 
 type requestImpl struct {
 	options []option.Option
 }
 
-func Go(options ...option.Option) Request {
+func New(options ...option.Option) Request {
 	request := new(requestImpl)
 
 	request.options = options
 
 	return request
 }
-func (r *requestImpl) Do(content body.Body) response.Response {
+func (r *requestImpl) Go(content body.Body) response.Response {
 
 	client := new(http.Client)
 	transport := new(http.Transport)
@@ -45,4 +45,18 @@ func (r *requestImpl) Do(content body.Body) response.Response {
 	}
 
 	return response.NewResponse(client.Do(request))
+}
+
+func Get(url string, query map[string]interface{}) response.Response {
+	return New(
+		option.GET,
+		option.URL(url),
+		option.Query(query),
+	).Go(nil)
+}
+func Post(url string, params map[string]interface{}) response.Response {
+	return New(
+		option.POST,
+		option.URL(url),
+	).Go(body.QueryBody(params, nil))
 }
