@@ -17,6 +17,7 @@ type requestImpl struct {
 	options []option.Option
 }
 
+// new a request
 func New(options ...option.Option) Request {
 	request := new(requestImpl)
 
@@ -24,6 +25,8 @@ func New(options ...option.Option) Request {
 
 	return request
 }
+
+// send request and get response
 func (r *requestImpl) Go(content body.Body) response.Response {
 
 	client := new(http.Client)
@@ -47,6 +50,7 @@ func (r *requestImpl) Go(content body.Body) response.Response {
 	return response.NewResponse(client.Do(request))
 }
 
+// GET request
 func Get(url string, query map[string]interface{}) response.Response {
 	return New(
 		option.GET,
@@ -54,6 +58,8 @@ func Get(url string, query map[string]interface{}) response.Response {
 		option.Query(query),
 	).Go(nil)
 }
+
+// POST request
 func Post(url string, params map[string]interface{}) response.Response {
 	return New(
 		option.POST,

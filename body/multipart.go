@@ -10,10 +10,12 @@ import (
 	"github.com/tansoz/request/readable"
 )
 
+// multipart boundary
 func Boundary() string {
 	return strings.ReplaceAll(base64.StdEncoding.EncodeToString([]byte(fmt.Sprint(time.Now().Unix()+rand.Int63()))), "=", "")
 }
 
+// multipart body in a request
 func MultipartBody(fields []Field, boundary string, headers map[string][]string) Body {
 
 	if headers == nil {

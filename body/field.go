@@ -73,6 +73,7 @@ func QueryBodyField(name string, query map[string]interface{}, headers map[strin
 	return NameRawField(name, content, content.Header())
 }
 
+// multipart body field
 func MultipartBodyField(name string, fields []Field, boundary string, headers map[string][]string) Field {
 	content := MultipartBody(fields, boundary, headers)
 	return NameRawField(name, content, content.Header())
