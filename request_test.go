@@ -45,11 +45,17 @@ func TestGo3(t *testing.T) {
 		option.Query(map[string]interface{}{
 			"id": 262626,
 		}),
-		option.Headers(map[string][]string{
-			"power-by": {"rommhui"},
-		}),
 		option.Timeout(15000),
-		option.ProxyURL("socks5://127.0.0.1:6565"),
+		// option.ProxyURL("socks5://127.0.0.1:6565"),
+		option.Cookies(map[string]string{
+			"asd":   "wqdwd",
+			"asd48": "wqdwd",
+		}),
+		option.Headers(map[string][]string{
+			"power-by":       {"rommhui"},
+			"cookie":         {"rommhui"},
+			"content-length": {"1561"},
+		}),
 	).Go(body.MultipartBody([]body.Field{
 		body.FileBodyField("image", "blob.png", "testfile.txt", "", 0, -1, nil),
 		body.ParamField("well", 1516616, nil),

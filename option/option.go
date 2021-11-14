@@ -206,6 +206,58 @@ func (p proxyOptionImpl) Set(r *http.Request, c *http.Client, t *http.Transport)
 	t.Proxy = func(r *http.Request) (*url.URL, error) {
 		return url.Parse(p.addr)
 	}
+	return nil
+}
 
+type cookieOptionImpl struct {
+	cookies map[string]string
+}
+
+// set cookie
+func Cookies(cookies map[string]string) Option {
+
+	option := new(cookieOptionImpl)
+
+	option.cookies = cookies
+
+	return option
+}
+func (ck cookieOptionImpl) Set(r *http.Request, c *http.Client, t *http.Transport) error {
+
+	if r == nil {
+		return ErrRequestNull
+	}
+
+	for k, v := range ck.cookies {
+		r.AddCookie(&http.Cookie{Name: k, Value: v})
+	}
+
+	return nil
+}
+
+type basicAuthOptionImpl struct {
+	username string
+	password string
+}
+
+// set basic auth information username and password
+func BasicAuth(username, password string) Option {
+
+	option := new(basicAuthOptionImpl)
+
+	option.username = username
+	option.password = password
+
+	return option
+
+}
+
+func (b basicAuthOptionImpl) Set(r *http.Request, c *http.Client, t *http.Transport) error {
+
+	if r == nil {
+		return ErrRequestNull
+	}
+
+	r.SetBasicAuth(b.username, b.password)
 	return nil
 }
