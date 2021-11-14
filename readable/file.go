@@ -10,6 +10,7 @@ type fileReadable struct {
 	len  int64
 }
 
+// get file readable.Readable by filename
 func NewFileReadable(filepath string, offset int64) Readable {
 	readable := new(fileReadable)
 

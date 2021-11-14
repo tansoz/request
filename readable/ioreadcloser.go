@@ -7,6 +7,7 @@ type ioReadCloserReadable struct {
 	closer io.ReadCloser
 }
 
+// convert io.ReadCloser to readable.Readable
 func NewIOReadCloserReadable(IOReadCloser io.ReadCloser, len int64, self bool) Readable {
 	readable := new(ioReadCloserReadable)
 

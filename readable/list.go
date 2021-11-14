@@ -10,6 +10,7 @@ type listReadable struct {
 	len     int64
 }
 
+// array readable.Readable objects as one
 func NewListReadable(readables []Readable) Readable {
 	readable := new(listReadable)
 

@@ -9,6 +9,7 @@ type bufferReadable struct {
 	len    int64
 }
 
+// convert bytes.Buffer to readable.Readable
 func NewBytesBufferReadable(buffer *bytes.Buffer) Readable {
 
 	readable := new(bufferReadable)

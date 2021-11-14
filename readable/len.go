@@ -11,6 +11,7 @@ type lenReadable struct {
 	len      int64
 }
 
+// limit readable.Readable readable length
 func NewLenReadable(readable Readable, len int64) Readable {
 	lenReadable := new(lenReadable)
 

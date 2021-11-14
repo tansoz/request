@@ -13,6 +13,7 @@ type ioReaderReadable struct {
 	self   bool
 }
 
+// convert io.Reader to readable.Readable
 func NewIOReaderReadable(reader io.Reader, len int64, self bool) Readable {
 
 	readable := new(ioReaderReadable)

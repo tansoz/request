@@ -8,6 +8,7 @@ type offsetReadable struct {
 	readed   int64
 }
 
+// offset data position
 // as possible as do not use this function
 func NewOffsetReadable(readable Readable, offset int64) Readable {
 	offsetReadable := new(offsetReadable)
