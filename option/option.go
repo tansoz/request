@@ -92,6 +92,9 @@ func (h headerOptionImpl) Set(r *http.Request, c *http.Client, t *http.Transport
 		r.Header = make(http.Header)
 	}
 	for k, vs := range h.headers {
+		if len(r.Header.Get(k)) > 0 {
+			r.Header.Del(k)
+		}
 		for _, v := range vs {
 			r.Header.Add(k, v)
 		}

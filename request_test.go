@@ -1,6 +1,7 @@
 package request
 
 import (
+	"bytes"
 	"fmt"
 	"testing"
 
@@ -41,7 +42,7 @@ func TestGo3(t *testing.T) {
 
 	r := New(
 		option.POST,
-		option.URL(URL),
+		option.URL("https://httpbin.org/post"),
 		option.Query(map[string]interface{}{
 			"id": 262626,
 		}),
@@ -55,6 +56,7 @@ func TestGo3(t *testing.T) {
 			"power-by":       {"rommhui"},
 			"cookie":         {"rommhui"},
 			"content-length": {"1561"},
+			"user-agent":     {"1561"},
 		}),
 	).Go(body.MultipartBody([]body.Field{
 		body.FileBodyField("image", "blob.png", "testfile.txt", "", 0, -1, nil),
@@ -67,4 +69,32 @@ func TestPost(t *testing.T) {
 		"id": 115,
 	}).File("info.txt")
 	fmt.Println(r)
+}
+func TestPost2(t *testing.T) {
+	multipartBody := body.MultipartBody(
+		[]body.Field{
+			body.FileBodyField("files", "testfile.txt", "go.mod", "text/plain", 0, -1, nil),
+			body.ParamField("id", 15, nil),
+			body.QueryBodyField("data", map[string]interface{}{
+				"str":    "hello world",
+				"number": 15,
+				"bool":   false,
+			}, nil),
+		},
+		"",
+		nil,
+	)
+	if resp := New(
+		option.Method("POST"),
+		option.URL("https://httpbin.org/post"),
+		option.Headers(map[string][]string{
+			"User-Agent": {"the request library by Romm Hui"},
+		}),
+	).Go(multipartBody); resp.Error() == nil {
+		var tmp bytes.Buffer
+		tmp.ReadFrom(resp.Readable())
+		fmt.Println(tmp.String())
+	} else {
+		fmt.Println(resp.Error())
+	}
 }
