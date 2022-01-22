@@ -76,7 +76,7 @@ func (resp *responseImpl) File(filename string) error {
 	if reader = resp.Readable(); reader == nil {
 		return ErrHadReaded
 	} else if file, err := os.OpenFile(filename, os.O_CREATE|os.O_WRONLY, 0333); err == nil {
-		file.Truncate(0)
+		file.Truncate(0) // clean all data in the file to saving new response data
 		b := make([]byte, 1024)
 		for num, readerr := reader.Read(b); readerr == nil || num > 0; num, readerr = reader.Read(b) {
 			_, writeerr := file.Write(b[0:num])

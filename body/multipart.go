@@ -42,3 +42,8 @@ func MultipartBody(fields []Field, boundary string, headers map[string][]string)
 
 	return RawBody(readable.NewListReadable(readables), headers)
 }
+
+func SimpleMultipartBody(fields ...Field) Body {
+
+	return MultipartBody(fields, "", nil)
+}

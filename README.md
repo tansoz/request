@@ -22,7 +22,10 @@ Make sure the library was imported before writing a request with the library.
 ### GET
 Use the library to send a simple GET request
 ```GO
-if resp := request.Get("https://httpbin.org/get", map[]); resp.Error() == nil {
+if resp := request.Get("https://httpbin.org/get", map[string]interface{}{
+  "id":1515,
+  "method":"get"
+}); resp.Error() == nil {
     var tmp bytes.Buffer
     tmp.ReadFrom(resp.Readable())
     fmt.Println(tmp.String())
@@ -139,7 +142,7 @@ request.New(
     option.URL("https://github.com/tansoz/request")
 ).Go(nil) // Call the Go function with a null body
 ```
-### Set method
+### Set Method
 ```GO
 request.New(
     option.Method("GET"), // option.POST, option.PUT, options.HEAD ...
@@ -199,17 +202,31 @@ request.New(
     option.Host("www.github.com"), // set hostname
 )
 ```
+### Set Range
+```GO
+request.New(
+    option.Method("GET"),
+    option.URL("https://github.com/tansoz/request"),
+    option.Headers(map[string][]string{
+        "User-Agent":{"the request library by Romm Hui"}
+    }),
+    option.ProxyURL("http://127.0.0.1:8080"),
+    option.Timeout(1000),
+    option.Host("www.github.com"), // set hostname
+    option.Range(100,200), // set range. Bytes=100-200
+)
+```
 ### Send a request with a Multipart body
 ```GO
 multipartBody := body.MultipartBody(
     []body.Field{
         body.FileBodyField("files", "testfile.txt", "go.mod", "text/plain", 0, -1, nil),
-		body.ParamField("id", 15, nil),
-		body.QueryBodyField("data", map[string]interface{}{
-			"str":    "hello world",
-			"number": 15,
-			"bool":   false,
-		}, nil),
+        body.ParamField("id", 15, nil),
+        body.QueryBodyField("data", map[string]interface{}{
+          "str":    "hello world",
+          "number": 15,
+          "bool":   false,
+        }, nil),
     },
     "",
     nil,
@@ -246,4 +263,34 @@ Result:
   "origin": "123.154.60.166",
   "url": "https://httpbin.org/post"
 }
+```
+### tools.JSON
+it can easy to get value from a JSON data structure
+```GO
+obj := new(JSON)
+json.Unmarshal([]byte(`{"author":"RommHui","name":"request","version":[1,2,0]}`), obj.Set())
+fmt.Println(obj.Get("author").(string))
+fmt.Println(obj.Get("version", 1))
+fmt.Println("obj:", obj.Get())
+
+subobj := obj.JSON("version")
+fmt.Println("subobj:", subobj)
+fmt.Println(subobj.Get(1))
+
+obj2 := new(JSON)
+json.Unmarshal([]byte(`["RommHui",1.20,"request"]`), obj2.Set())
+fmt.Println(obj2.Get(0))
+fmt.Println(obj2.Get(2))
+fmt.Println(obj2.Get())
+```
+Result:
+```
+RommHui
+2
+obj: map[author:RommHui name:request version:[1 2 0]]
+subobj: [1 2 0]
+2
+RommHui
+request
+[RommHui 1.2 request]
 ```

@@ -10,7 +10,7 @@ import (
 )
 
 type Request interface {
-	Go(body.Body) response.Response
+	Go(body.Body) response.Response // send the HTTP request to the target web server
 }
 
 type requestImpl struct {
@@ -65,4 +65,14 @@ func Post(url string, params map[string]interface{}) response.Response {
 		option.POST,
 		option.URL(url),
 	).Go(body.QueryBody(params, nil))
+}
+
+// POST file
+func PostFile(url string, name string, filename string, path string, mime string) response.Response {
+	return New(
+		option.POST,
+		option.URL(url),
+	).Go(body.SimpleMultipartBody(
+		body.FileBodyField(name, filename, path, mime, 0, -1, nil),
+	))
 }

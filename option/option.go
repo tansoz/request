@@ -162,9 +162,9 @@ func (to timeoutOptionImpl) Set(r *http.Request, c *http.Client, t *http.Transpo
 	return nil
 }
 
-type remoteAddrOptionImpl struct {
-	addr string
-}
+// type remoteAddrOptionImpl struct {
+// 	addr string
+// }
 
 // set remote address
 // func RemoteAddr(addr string) Option {
@@ -262,5 +262,35 @@ func (b basicAuthOptionImpl) Set(r *http.Request, c *http.Client, t *http.Transp
 	}
 
 	r.SetBasicAuth(b.username, b.password)
+	return nil
+}
+
+type rangeOptionImpl struct {
+	begin string
+	end   string
+}
+
+// set range. if the end is equal to the -1 that mean end is blank. Range(0,-1):Bytes=0-
+func Range(begin, end int64) Option {
+
+	option := new(rangeOptionImpl)
+
+	option.begin = fmt.Sprint(begin)
+	option.end = ""
+	if end >= 0 {
+		option.end = fmt.Sprint(end)
+	}
+
+	return option
+
+}
+
+func (rg rangeOptionImpl) Set(r *http.Request, c *http.Client, t *http.Transport) error {
+
+	if r == nil {
+		return ErrRequestNull
+	}
+
+	r.Header.Set("Range", fmt.Sprintf("Bytes=%s-%s", rg.begin, rg.end))
 	return nil
 }

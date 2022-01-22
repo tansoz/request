@@ -1,13 +1,20 @@
 package tools
 
+import "fmt"
+
 type JSON struct {
 	data interface{}
 }
 
+func (j JSON) String() string {
+	return fmt.Sprint(j.data)
+}
 func (j *JSON) Set() interface{} {
 	return &j.data
 }
-
+func (j JSON) JSON(path ...interface{}) *JSON {
+	return &JSON{j.Get(path...)}
+}
 func (j JSON) Get(path ...interface{}) interface{} {
 	current := j.data
 	for _, name := range path {
