@@ -291,6 +291,6 @@ func (rg rangeOptionImpl) Set(r *http.Request, c *http.Client, t *http.Transport
 		return ErrRequestNull
 	}
 
-	r.Header.Set("Range", fmt.Sprintf("Bytes=%s-%s", rg.begin, rg.end))
+	r.Header.Set("Range", fmt.Sprintf("bytes=%s-%s", rg.begin, rg.end))
 	return nil
 }
